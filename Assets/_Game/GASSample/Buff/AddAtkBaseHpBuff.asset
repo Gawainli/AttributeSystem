@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 364136156f294e2db5ba8e2b7138b2c9, type: 3}
+  m_Name: AddAtkBaseHpBuff
+  m_EditorClassIdentifier: 
+  duration: 0
+  period: 0
+  executeImmediate: 1
+  tag: 0
+  durationType: 0
+  overlapType: 0
+  modifiers:
+  - attributeName: Atk
+    opType: 0
+    magnitude: {fileID: 11400000, guid: faf0db8a5198cc54ab3c3a460be6aee2, type: 2}
