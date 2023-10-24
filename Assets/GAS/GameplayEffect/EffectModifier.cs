@@ -11,7 +11,7 @@ namespace GAS
     
     
     [Serializable]
-    public class BuffModifier
+    public class EffectModifier
     {
         public string attributeName;
         public OpType opType;

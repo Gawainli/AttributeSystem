@@ -3,12 +3,12 @@ using UnityEngine;
 
 namespace GAS
 {
-    public class BuffComponent : MonoBehaviour
+    public class AbilityComponent : MonoBehaviour
     {
         public AttributeComponent attributeComponent;
 
-        private List<BuffHandle> _appliedBuffHandles = new List<BuffHandle>();
-        private Dictionary<Buff, BuffHandle> _buffHandleMap = new Dictionary<Buff, BuffHandle>();
+        private List<GameplayEffectHandle> _appliedBuffHandles = new List<GameplayEffectHandle>();
+        private Dictionary<GameplayEffect, GameplayEffectHandle> _buffHandleMap = new Dictionary<GameplayEffect, GameplayEffectHandle>();
 
         public void Tick(float deltaTime)
         {
@@ -23,18 +23,18 @@ namespace GAS
             for (int i = 0; i < _appliedBuffHandles.Count; i++)
             {
                 var handle = _appliedBuffHandles[i];
-                if (handle.buff.durationType == DurationType.Instant)
+                if (handle.gameplayEffect.durationType == DurationType.Instant)
                 {
                     continue;
                 }
 
                 handle.TickDuration(deltaTime);
                 
-                if (handle.buff.IsPeriodic())
+                if (handle.gameplayEffect.IsPeriodic())
                 {
                     if (handle.TickPeriod(deltaTime))
                     {
-                        handle.buff.OnPeriod(handle);
+                        handle.gameplayEffect.OnPeriod(handle);
                         ApplyBuffToBaseValue(handle);
                     }
                 }
@@ -50,25 +50,25 @@ namespace GAS
             for (var i = _appliedBuffHandles.Count - 1; i >= 0; i--)
             {
                 var handle = _appliedBuffHandles[i];
-                if (handle.buff.durationType == DurationType.Infinite)
+                if (handle.gameplayEffect.durationType == DurationType.Infinite)
                 {
                     continue;
                 }
 
                 if (handle.durationRemaining <= 0)
                 {
-                    handle.buff.OnRemove(handle);
+                    handle.gameplayEffect.OnRemove(handle);
                     _appliedBuffHandles.RemoveAt(i);
                 }
             }
         }
 
-        public BuffHandle MakeBuffHandle(Buff buff, float level = 1)
+        public GameplayEffectHandle MakeBuffHandle(GameplayEffect gameplayEffect, float level = 1)
         {
-            return BuffHandle.Create(buff, this, level);
+            return GameplayEffectHandle.Create(gameplayEffect, this, level);
         }
 
-        public bool ApplyBuffToSelf(BuffHandle handle)
+        public bool ApplyBuffToSelf(GameplayEffectHandle handle)
         {
             if (handle == null)
             {
@@ -80,10 +80,10 @@ namespace GAS
                 return false;
             }
 
-            handle.buff.OnStart(handle);
-            if (_buffHandleMap.TryGetValue(handle.buff, out var exist))
+            handle.gameplayEffect.OnStart(handle);
+            if (_buffHandleMap.TryGetValue(handle.gameplayEffect, out var exist))
             {
-                switch (exist.buff.overlapType)
+                switch (exist.gameplayEffect.overlapType)
                 {
                     case OverlapType.Overlap:
                         break;
@@ -96,7 +96,7 @@ namespace GAS
             }
 
             handle.parent = this;
-            if (handle.buff.durationType == DurationType.Instant)
+            if (handle.gameplayEffect.durationType == DurationType.Instant)
             {
                 ApplyBuffToBaseValue(handle);
             }
@@ -105,10 +105,10 @@ namespace GAS
             return true;
         }
 
-        private void ApplyBuffToAttrModifier(BuffHandle handle)
+        private void ApplyBuffToAttrModifier(GameplayEffectHandle handle)
         {
             var attrModifier = new AttributeModifier();
-            foreach (var bm in handle.buff.modifiers)
+            foreach (var bm in handle.gameplayEffect.modifiers)
             {
                 var attr = attributeComponent.GetAttribute(bm.attributeName);
                 if (attr == null)
@@ -134,9 +134,9 @@ namespace GAS
             }
         }
 
-        private void ApplyBuffToBaseValue(BuffHandle handle)
+        private void ApplyBuffToBaseValue(GameplayEffectHandle handle)
         {
-            foreach (var bm in handle.buff.modifiers)
+            foreach (var bm in handle.gameplayEffect.modifiers)
             {
                 var attr = attributeComponent.GetAttribute(bm.attributeName);
                 if (attr == null)
@@ -162,9 +162,9 @@ namespace GAS
             }
         }
 
-        private bool CheckTagOk(BuffHandle handle)
+        private bool CheckTagOk(GameplayEffectHandle handle)
         {
-            if (handle.buff.tag == 0)
+            if (handle.gameplayEffect.tag == 0)
             {
                 return true;
             }

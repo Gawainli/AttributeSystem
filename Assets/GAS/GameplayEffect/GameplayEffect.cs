@@ -18,7 +18,7 @@ namespace GAS
     }
 
     [CreateAssetMenu(menuName = "GAS/Buff")]
-    public class Buff : ScriptableObject
+    public class GameplayEffect : ScriptableObject
     {
         public float duration;
         public float period;
@@ -27,22 +27,22 @@ namespace GAS
         public DurationType durationType;
         public OverlapType overlapType;
 
-        public List<BuffModifier> modifiers = new List<BuffModifier>();
+        public List<EffectModifier> modifiers = new List<EffectModifier>();
         
         public bool IsPeriodic()
         {
             return period > 0.0001f;
         }
 
-        public virtual void OnStart(BuffHandle handle)
+        public virtual void OnStart(GameplayEffectHandle handle)
         {
         }
         
-        public virtual void OnPeriod(BuffHandle handle)
+        public virtual void OnPeriod(GameplayEffectHandle handle)
         {
         }
         
-        public virtual void OnRemove(BuffHandle handle)
+        public virtual void OnRemove(GameplayEffectHandle handle)
         {
         }
     }

@@ -1,16 +1,17 @@
 ﻿using System;
 using GAS;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Entity : MonoBehaviour
 {
     public AttributeComponent attributeComponent;
-    public BuffComponent buffComponent;
+    [FormerlySerializedAs("buffComponent")] public AbilityComponent abilityComponent;
 
     private void Awake()
     {
         attributeComponent = GetComponent<AttributeComponent>();
-        buffComponent = GetComponent<BuffComponent>();
+        abilityComponent = GetComponent<AbilityComponent>();
 
     }
 
@@ -23,6 +24,6 @@ public class Entity : MonoBehaviour
     private void Update()
     {
         attributeComponent.Tick();
-        buffComponent.Tick(Time.deltaTime);
+        abilityComponent.Tick(Time.deltaTime);
     }
 }

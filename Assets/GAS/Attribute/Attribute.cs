@@ -4,7 +4,6 @@ using UnityEngine.Serialization;
 
 namespace GAS
 {
-    // [CreateAssetMenu(menuName = "GAS/Attribute")]
     [Serializable]
     public class Attribute
     {

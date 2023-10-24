@@ -19,11 +19,11 @@ namespace GAS
         public float compareValue;
         public float resultValue;
 
-        public override void Initialise(BuffHandle handle)
+        public override void Initialise(GameplayEffectHandle handle)
         {
         }
 
-        public override float CalculateMagnitude(BuffHandle handle)
+        public override float CalculateMagnitude(GameplayEffectHandle handle)
         {
             var attr = handle.parent.attributeComponent.GetAttribute(baseAttributeName);
             if (attr == null)

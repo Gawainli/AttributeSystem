@@ -11,7 +11,7 @@ public class TestUI : MonoBehaviour
     public TMP_Text hpText;
     public TMP_Text atkText;
     
-    public Buff[] testBuffs;
+    public GameplayEffect[] testBuffs;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,7 +27,7 @@ public class TestUI : MonoBehaviour
 
     public void TestAddBuff(int idx)
     {
-        var handle = unitEntity.buffComponent.MakeBuffHandle(testBuffs[idx]);
-        unitEntity.buffComponent.ApplyBuffToSelf(handle);
+        var handle = unitEntity.abilityComponent.MakeBuffHandle(testBuffs[idx]);
+        unitEntity.abilityComponent.ApplyBuffToSelf(handle);
     }
 }

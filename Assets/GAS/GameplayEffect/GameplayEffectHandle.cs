@@ -1,38 +1,38 @@
 ﻿
 namespace GAS
 {
-    public class BuffHandle
+    public class GameplayEffectHandle
     {
-        public Buff buff;
-        public BuffComponent source;
-        public BuffComponent parent;
+        public GameplayEffect gameplayEffect;
+        public AbilityComponent source;
+        public AbilityComponent parent;
         public float durationRemaining;
         public float totalDuration;
         public float timeUntilPeriod;
         public float level;
         
-        public static BuffHandle Create(Buff buff, BuffComponent source, float level = 1)
+        public static GameplayEffectHandle Create(GameplayEffect gameplayEffect, AbilityComponent source, float level = 1)
         {
-            return new BuffHandle(buff, source, level);
+            return new GameplayEffectHandle(gameplayEffect, source, level);
         }
         
-        private BuffHandle(Buff buff, BuffComponent source, float level)
+        private GameplayEffectHandle(GameplayEffect gameplayEffect, AbilityComponent source, float level)
         {
-            this.buff = buff;
+            this.gameplayEffect = gameplayEffect;
             this.source = source;
             this.parent = source;
             this.level = level;
             
-            foreach (var bm in this.buff.modifiers)
+            foreach (var bm in this.gameplayEffect.modifiers)
             {
                 bm.magnitude.Initialise(this);
             }
             
-            this.durationRemaining = this.buff.duration;
-            this.totalDuration = this.buff.duration;
-            this.timeUntilPeriod = this.buff.period;
+            this.durationRemaining = this.gameplayEffect.duration;
+            this.totalDuration = this.gameplayEffect.duration;
+            this.timeUntilPeriod = this.gameplayEffect.period;
 
-            if (this.buff.executeImmediate)
+            if (this.gameplayEffect.executeImmediate)
             {
                 this.timeUntilPeriod = 0;
             }
@@ -43,8 +43,8 @@ namespace GAS
             this.timeUntilPeriod -= deltaTime;
             if (this.timeUntilPeriod <= 0.01f)
             {
-                this.timeUntilPeriod = this.buff.period;
-                if (buff.IsPeriodic())
+                this.timeUntilPeriod = this.gameplayEffect.period;
+                if (gameplayEffect.IsPeriodic())
                 {
                     return true;
                 }
@@ -54,7 +54,7 @@ namespace GAS
 
         public void TickDuration(float deltaTime)
         {
-            if (this.buff.durationType == DurationType.Infinite)
+            if (this.gameplayEffect.durationType == DurationType.Infinite)
             {
                 this.durationRemaining = 1;
             }
