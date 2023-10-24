@@ -8,35 +8,11 @@ namespace GAS
     [Serializable]
     public class Attribute
     {
+        public AttributeDefine attributeDefine;
         public string name;
         public float baseValue;
         public float currentValue;
 
         public AttributeModifier modifier;
-
-        public Attribute(string name, float baseValue)
-        {
-            this.name = name;
-            this.baseValue = baseValue;
-            modifier = new AttributeModifier();
-        }
-
-        public void ResetModifier()
-        {
-            modifier.Reset();
-        }
-
-        public void CalcCurrentValue()
-        {
-            currentValue = baseValue;
-            currentValue += modifier.add;
-            currentValue *= 1 + modifier.multiply;
-            if (modifier.overwrite != 0)
-            {
-                currentValue = modifier.overwrite;
-            }
-        }
-        
-        
     }
 }

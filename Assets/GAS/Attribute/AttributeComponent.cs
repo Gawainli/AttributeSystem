@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
+using UnityEngine.Serialization;
 
 namespace GAS
 {
     public class AttributeComponent : MonoBehaviour
     {
-        [SerializeField] private List<Attribute> _attributes;
+        [SerializeField] private List<AttributeDefine> _attributeDefines;
+        [SerializeField] private Attribute[] _attributes;
         private Dictionary<string, Attribute> _attributeMap = new Dictionary<string, Attribute>();
 
         private void Awake()
@@ -17,37 +20,44 @@ namespace GAS
 
         private void Init()
         {
-            foreach (var attr in _attributes)
+            foreach (var attr in _attributeDefines)
             {
-                _attributeMap.Add(attr.name, attr);
+                _attributeMap.Add(attr.name, new Attribute()
+                {
+                    attributeDefine = attr,
+                    name = attr.name,
+                    modifier = new AttributeModifier()
+                    {
+                        add = 0,
+                        multiply = 0,
+                        overwrite = 0,
+                    }
+                });
             }
+#if UNITY_EDITOR
+            _attributes = _attributeMap.Values.ToArray();
+#endif
         }
 
         public void Tick()
         {
-            foreach (var attr in _attributes)
+            foreach (var attr in _attributeMap.Values)
             {
-                attr.CalcCurrentValue();
+                attr.attributeDefine.CalcCurrentValue(attr, _attributeMap);
             }
         }
         
         public void ResetAllAttributeModifier()
         {
-            foreach (var attr in _attributes)
+            foreach (var attr in _attributeMap.Values)
             {
-                attr.ResetModifier();
+                attr.modifier.Reset();
             }
         }
         
         public void AddAttribute(Attribute attribute)
         {
             _attributeMap.Add(attribute.name, attribute);
-        }
-        
-        public void AddAttribute(string name, float baseValue)
-        {
-            var attribute = new Attribute(name, baseValue);
-            _attributeMap.Add(name, attribute);
         }
         
         public void RemoveAttribute(string name)

@@ -410,20 +410,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _attributes:
-  - name: HP
-    baseValue: 0
-    currentValue: 0
-    modifier:
-      add: 0
-      multiply: 0
-      overwrite: 0
-  - name: Atk
-    baseValue: 0
-    currentValue: 0
-    modifier:
-      add: 0
-      multiply: 0
-      overwrite: 0
+  - {fileID: 11400000, guid: d36be4f5e3d36904e8bb80fbccbe3675, type: 2}
+  - {fileID: 11400000, guid: d7a1bd8ac7323ac479ba501b679ca719, type: 2}
 --- !u!4 &423015175
 Transform:
   m_ObjectHideFlags: 0

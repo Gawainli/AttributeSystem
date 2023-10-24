@@ -16,7 +16,7 @@ MonoBehaviour:
   period: 1
   executeImmediate: 0
   tag: 0
-  durationType: 0
+  durationType: 2
   overlapType: 0
   modifiers:
   - attributeName: HP
