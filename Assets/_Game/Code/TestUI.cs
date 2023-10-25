@@ -27,7 +27,7 @@ public class TestUI : MonoBehaviour
 
     public void TestAddBuff(int idx)
     {
-        var handle = unitEntity.abilityComponent.MakeBuffHandle(testBuffs[idx]);
-        unitEntity.abilityComponent.ApplyBuffToSelf(handle);
+        var handle = unitEntity.abilityComponent.MakeGameplayEffectHandle(testBuffs[idx]);
+        unitEntity.abilityComponent.ApplyGameplayEffectToSelf(handle);
     }
 }

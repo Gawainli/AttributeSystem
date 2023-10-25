@@ -7,49 +7,118 @@ namespace GAS
     {
         public AttributeComponent attributeComponent;
 
-        private List<GameplayEffectHandle> _appliedBuffHandles = new List<GameplayEffectHandle>();
-        private Dictionary<GameplayEffect, GameplayEffectHandle> _buffHandleMap = new Dictionary<GameplayEffect, GameplayEffectHandle>();
+        private List<GameplayEffectHandle> _appliedGameplayEffectHandles = new List<GameplayEffectHandle>();
+
+        private Dictionary<GameplayEffect, GameplayEffectHandle> _gameplayEffectHandleMap =
+            new Dictionary<GameplayEffect, GameplayEffectHandle>();
+
+        private Dictionary<string, AbstractAbilityHandle> _addedAbilityHandles =
+            new Dictionary<string, AbstractAbilityHandle>();
+
+        private List<AbstractAbilityHandle> _activeAbilityHandles = new List<AbstractAbilityHandle>();
 
         public void Tick(float deltaTime)
         {
             attributeComponent.ResetAllAttributeModifier();
-            TickBuffHandles(deltaTime);
-            CleanBuffHandles();
+            TickActiveAbility(deltaTime);
+            TickGameplayEffectHandles(deltaTime);
+            CleanGameplayEffectHandles();
+        }
+
+        #region Ability
+
+        public void AddAbility(AbstractAbilityHandle abilityHandle)
+        {
+            if (abilityHandle == null)
+            {
+                return;
+            }
+
+            abilityHandle.owner = this;
+            _addedAbilityHandles.Add(abilityHandle.abilityDefine.name, abilityHandle);
+        }
+
+        public AbstractAbilityHandle GetAbilityHandle(string abilityName)
+        {
+            if (_addedAbilityHandles.TryGetValue(abilityName, out var abilityHandle))
+            {
+                return abilityHandle;
+            }
+
+            return null;
+        }
+
+        public AbstractAbilityHandle GetAbilityHandle(AbilityDefine ability)
+        {
+            if (_addedAbilityHandles.TryGetValue(ability.name, out var abilityHandle))
+            {
+                return abilityHandle;
+            }
+
+            return null;
+        }
+
+        public void ActiveAbility(AbstractAbilityHandle abilityHandle)
+        {
+            if (abilityHandle == null)
+            {
+                return;
+            }
+
+            _activeAbilityHandles.Add(abilityHandle);
         }
 
 
-        private void TickBuffHandles(float deltaTime)
+        private void TickActiveAbility(float deltaTime)
         {
-            for (int i = 0; i < _appliedBuffHandles.Count; i++)
+            for (int i = 0; i < _activeAbilityHandles.Count; i++)
             {
-                var handle = _appliedBuffHandles[i];
+                var abHandle = _activeAbilityHandles[i];
+                if (abHandle == null)
+                {
+                    continue;
+                }
+
+                abHandle.Tick(deltaTime);
+            }
+        }
+
+        #endregion
+
+        #region GameplayEffect
+
+        private void TickGameplayEffectHandles(float deltaTime)
+        {
+            for (int i = 0; i < _appliedGameplayEffectHandles.Count; i++)
+            {
+                var handle = _appliedGameplayEffectHandles[i];
                 if (handle.gameplayEffect.durationType == DurationType.Instant)
                 {
                     continue;
                 }
 
                 handle.TickDuration(deltaTime);
-                
+
                 if (handle.gameplayEffect.IsPeriodic())
                 {
                     if (handle.TickPeriod(deltaTime))
                     {
                         handle.gameplayEffect.OnPeriod(handle);
-                        ApplyBuffToBaseValue(handle);
+                        ApplyGameplayEffectToBaseValue(handle);
                     }
                 }
                 else
                 {
-                    ApplyBuffToAttrModifier(handle);
+                    ApplyGameplayEffectToAttrModifier(handle);
                 }
             }
         }
 
-        private void CleanBuffHandles()
+        private void CleanGameplayEffectHandles()
         {
-            for (var i = _appliedBuffHandles.Count - 1; i >= 0; i--)
+            for (var i = _appliedGameplayEffectHandles.Count - 1; i >= 0; i--)
             {
-                var handle = _appliedBuffHandles[i];
+                var handle = _appliedGameplayEffectHandles[i];
                 if (handle.gameplayEffect.durationType == DurationType.Infinite)
                 {
                     continue;
@@ -58,17 +127,18 @@ namespace GAS
                 if (handle.durationRemaining <= 0)
                 {
                     handle.gameplayEffect.OnRemove(handle);
-                    _appliedBuffHandles.RemoveAt(i);
+                    _appliedGameplayEffectHandles.RemoveAt(i);
+                    _gameplayEffectHandleMap.Remove(handle.gameplayEffect);
                 }
             }
         }
 
-        public GameplayEffectHandle MakeBuffHandle(GameplayEffect gameplayEffect, float level = 1)
+        public GameplayEffectHandle MakeGameplayEffectHandle(GameplayEffect gameplayEffect, float level = 1)
         {
             return GameplayEffectHandle.Create(gameplayEffect, this, level);
         }
 
-        public bool ApplyBuffToSelf(GameplayEffectHandle handle)
+        public bool ApplyGameplayEffectToSelf(GameplayEffectHandle handle)
         {
             if (handle == null)
             {
@@ -81,7 +151,7 @@ namespace GAS
             }
 
             handle.gameplayEffect.OnStart(handle);
-            if (_buffHandleMap.TryGetValue(handle.gameplayEffect, out var exist))
+            if (_gameplayEffectHandleMap.TryGetValue(handle.gameplayEffect, out var exist))
             {
                 switch (exist.gameplayEffect.overlapType)
                 {
@@ -98,14 +168,15 @@ namespace GAS
             handle.parent = this;
             if (handle.gameplayEffect.durationType == DurationType.Instant)
             {
-                ApplyBuffToBaseValue(handle);
+                ApplyGameplayEffectToBaseValue(handle);
             }
 
-            _appliedBuffHandles.Add(handle);
+            _appliedGameplayEffectHandles.Add(handle);
+            _gameplayEffectHandleMap.TryAdd(handle.gameplayEffect, handle);
             return true;
         }
 
-        private void ApplyBuffToAttrModifier(GameplayEffectHandle handle)
+        private void ApplyGameplayEffectToAttrModifier(GameplayEffectHandle handle)
         {
             var attrModifier = new AttributeModifier();
             foreach (var bm in handle.gameplayEffect.modifiers)
@@ -134,7 +205,7 @@ namespace GAS
             }
         }
 
-        private void ApplyBuffToBaseValue(GameplayEffectHandle handle)
+        private void ApplyGameplayEffectToBaseValue(GameplayEffectHandle handle)
         {
             foreach (var bm in handle.gameplayEffect.modifiers)
             {
@@ -171,5 +242,7 @@ namespace GAS
 
             return true;
         }
+
+        #endregion
     }
 }
