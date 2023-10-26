@@ -1,0 +1,19 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/GAS/GameplayTag/Editor/TagEditorWindow.uss?fileID=7433441132597879392&amp;guid=cd5c02256a71c384fa77f1790ba782ed&amp;type=3#TagEditorWindow" />
+    <ui:VisualElement style="flex-grow: 1;">
+        <ui:TextField picking-mode="Ignore" label="NewTag" name="NewTagTF">
+            <ui:Button text="+" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddTag" />
+            <ui:Button text="-" parse-escape-sequences="true" display-tooltip-when-elided="true" name="RemoveTag" style="-unity-text-align: middle-center;" />
+        </ui:TextField>
+    </ui:VisualElement>
+    <ui:VisualElement focusable="true" name="VisualElement" style="flex-grow: 1; height: 331px;">
+        <ui:Label tabindex="-1" text="Tags" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+        <ui:TreeView view-data-key="unity-tree-view" focusable="true" show-border="true" name="TreeView" virtualization-method="DynamicHeight" auto-expand="false" style="background-color: rgba(0, 0, 0, 0); height: 254px;" />
+    </ui:VisualElement>
+    <ui:VisualElement style="flex-grow: 1; justify-content: flex-end; position: relative; align-items: stretch; align-self: auto;">
+        <ui:TextField picking-mode="Ignore" label="TagAssetPath" name="AssetPathTF" style="align-items: flex-end;">
+            <ui:Button text="Load" parse-escape-sequences="true" display-tooltip-when-elided="true" name="BtnLoadAsset" />
+        </ui:TextField>
+        <ui:Label tabindex="-1" text="Output&#10;" parse-escape-sequences="true" display-tooltip-when-elided="true" name="OutputLabel" style="align-items: auto; align-self: auto; top: auto; -unity-font-style: bold-and-italic; -unity-text-align: upper-left; justify-content: flex-start;" />
+    </ui:VisualElement>
+</ui:UXML>
