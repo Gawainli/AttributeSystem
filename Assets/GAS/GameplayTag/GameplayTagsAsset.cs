@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace GAS.GameplayTag.Editor
+namespace GAS.GameplayTag
 {
     [CreateAssetMenu(fileName = "GameplayTagsAsset", menuName = "GAS/GameplayTagsAsset")]
     public class GameplayTagsAsset : ScriptableObject
