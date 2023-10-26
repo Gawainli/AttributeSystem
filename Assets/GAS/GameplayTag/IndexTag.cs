@@ -1,4 +1,4 @@
-﻿namespace GAS.GameplayTag.Editor
+﻿namespace GAS.GameplayTag
 {
     public struct IndexTag
     {
