@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace GAS
@@ -35,6 +36,7 @@ namespace GAS
             }
 
             abilityHandle.owner = this;
+            abilityHandle.Start();
             _addedAbilityHandles.Add(abilityHandle.abilityDefine.name, abilityHandle);
         }
 
@@ -166,6 +168,7 @@ namespace GAS
             }
 
             handle.parent = this;
+            ApplyGameplayEffectGrantedAbility(handle);
             if (handle.gameplayEffect.durationType == DurationType.Instant)
             {
                 ApplyGameplayEffectToBaseValue(handle);
@@ -174,6 +177,15 @@ namespace GAS
             _appliedGameplayEffectHandles.Add(handle);
             _gameplayEffectHandleMap.TryAdd(handle.gameplayEffect, handle);
             return true;
+        }
+
+        private void ApplyGameplayEffectGrantedAbility(GameplayEffectHandle handle)
+        {
+            foreach (var ad in handle.gameplayEffect.grantedAbilityDefines)
+            {
+                var adHandle = ad.CreateAbilityHandle(this);
+                AddAbility(adHandle);
+            }
         }
 
         private void ApplyGameplayEffectToAttrModifier(GameplayEffectHandle handle)

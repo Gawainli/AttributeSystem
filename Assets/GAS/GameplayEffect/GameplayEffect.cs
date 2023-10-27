@@ -28,6 +28,7 @@ namespace GAS
         public OverlapType overlapType;
 
         public List<EffectModifier> modifiers = new List<EffectModifier>();
+        public List<AbilityDefine> grantedAbilityDefines = new List<AbilityDefine>();
         
         public bool IsPeriodic()
         {

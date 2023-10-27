@@ -7,6 +7,6 @@ namespace GAS
         [SerializeField] private string name;
         [SerializeField] public GameplayEffect cost;
         [SerializeField] public GameplayEffect cd;
-        
+        public abstract AbstractAbilityHandle CreateAbilityHandle(AbilityComponent owner);
     }
 }
