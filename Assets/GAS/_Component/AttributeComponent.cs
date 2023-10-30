@@ -69,6 +69,7 @@ namespace GAS
         {
             if (_attributeMap.TryGetValue(name, out var attribute))
             {
+                attribute.attributeDefine.CalcCurrentValue(attribute, _attributeMap);
                 return attribute;
             }
             return null;

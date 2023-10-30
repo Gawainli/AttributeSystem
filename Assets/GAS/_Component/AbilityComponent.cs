@@ -27,6 +27,18 @@ namespace GAS
         }
 
         #region Ability
+        
+        public AbstractAbilityHandle AddAbility(AbilityDefine abilityDefine)
+        {
+            if (abilityDefine == null)
+            {
+                return null;
+            }
+
+            var abilityHandle = abilityDefine.CreateAbilityHandle(this);
+            AddAbility(abilityHandle);
+            return abilityHandle;
+        }
 
         public void AddAbility(AbstractAbilityHandle abilityHandle)
         {
@@ -36,7 +48,7 @@ namespace GAS
             }
 
             abilityHandle.owner = this;
-            abilityHandle.Start();
+            abilityHandle.Awake();
             _addedAbilityHandles.Add(abilityHandle.abilityDefine.name, abilityHandle);
         }
 
@@ -60,14 +72,47 @@ namespace GAS
             return null;
         }
 
-        public void ActiveAbility(AbstractAbilityHandle abilityHandle)
+        public bool ActiveAbility(AbstractAbilityHandle abilityHandle)
         {
             if (abilityHandle == null)
             {
-                return;
+                return false;
             }
 
-            _activeAbilityHandles.Add(abilityHandle);
+            if (!_addedAbilityHandles.ContainsValue(abilityHandle))
+            {
+                return false;
+            }
+
+            if (abilityHandle.CanActivate())
+            {
+                abilityHandle.Active();
+                _activeAbilityHandles.Add(abilityHandle);
+                return true;
+            }
+            return false;
+        }
+
+        public bool CancelAbility(AbstractAbilityHandle abilityHandle)
+        {
+            if (abilityHandle == null || !_activeAbilityHandles.Contains(abilityHandle))
+            {
+                return false;
+            }
+            abilityHandle.End();
+            _activeAbilityHandles.Remove(abilityHandle);
+            return true;
+        }
+
+        public bool CancelAbility(AbilityDefine ability)
+        {
+            var abilityHandle = GetAbilityHandle(ability);
+            if (abilityHandle == null)
+            {
+                return false;
+            }
+
+            return CancelAbility(abilityHandle);
         }
 
 

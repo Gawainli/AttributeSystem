@@ -15,7 +15,11 @@
             this.isActive = false;
         }
 
-        public virtual void Start()
+        public virtual void Awake()
+        {
+        }
+
+        public virtual void Active()
         {
             isActive = true;
         }
